@@ -19,7 +19,9 @@ pipeline {
           echo 'Hello world'
           //slackSend(channel: "#alert", attachments: attachments)
             slackSend(channel: slackResponse.channelId, message: "Build: ${env.JOB_NAME} Completed Successfully ${env.BUILD_URL}", timestamp: slackResponse.ts)
-          } hhh
+            hhh
+          
+          } 
           catch(Exception error)
           {
             sh 'echo "job failed"'
