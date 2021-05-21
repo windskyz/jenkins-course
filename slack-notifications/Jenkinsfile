@@ -26,7 +26,7 @@ pipeline {
           {
             sh 'echo "job failed"'
             currentBuild.result = 'FAILURE'
-            slackSend(channel: slackResponse.channelId, message: "Builded failed with error: $(error) Troubleshoot with console log ${env.BUILD_URL}", timestamp: slackResponse.ts)
+            slackSend(channel: slackResponse.channelId, message: "Build FAILED: ${env.JOB_NAME} Completed Successfully ${env.BUILD_URL}", timestamp: slackResponse.ts)
           }
         }
       
