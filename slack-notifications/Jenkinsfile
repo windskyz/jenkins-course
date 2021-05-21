@@ -4,6 +4,8 @@ node {
   try {
     stage('build') {
       println('so far so good...')
+      slackSend (channel: slackResponse.channelId, color: '#FF0000', message: "Build: ${env.JOB_NAME} Completed Successfully ${env.BUILD_URL}", timestamp: slackResponse.ts)
+
     }
     stage('test') {
       println('A test has failed!')
@@ -14,7 +16,7 @@ node {
     currentBuild.result = "FAILURE";
 
     // send slack notification
-    slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+    slackSend (channel: slackResponse.channelId, color: '#FF0000', message: "Build: ${env.JOB_NAME} Completed Successfully ${env.BUILD_URL}", timestamp: slackResponse.ts)
 
     // throw the error
     throw e;
