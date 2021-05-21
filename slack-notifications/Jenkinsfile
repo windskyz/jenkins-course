@@ -1,24 +1,34 @@
-node {
+def attachments = [
+  [
+    text: 'Jenkin integrated with slack',
+    fallback: 'this good',
+    color: '#ff0000'
+  ]
+]
 
-  // job
-  try {
-    stage('build') {
-      println('so far so good...')
-      slackSend (channel: slackResponse.channelId, color: '#FF0000', message: "Build: ${env.JOB_NAME} Completed Successfully ${env.BUILD_URL}", timestamp: slackResponse.ts)
+def slackResponse  = slackSend(channel: "alert", message: "Here is the primary message")
 
+pipeline {
+  agent any
+  
+  stages {
+    stage('Hello'){
+      steps {
+        script {
+          try {
+          echo 'Hello world'
+          //slackSend(channel: "#alert", attachments: attachments)
+            slackSend(channel: slackResponse.channelId, message: "Build: ${env.JOB_NAME} Completed Successfully ${env.BUILD_URL}", timestamp: slackResponse.ts)
+          }
+          catch(Exception error)
+          {
+            sh 'echo "job failed"'
+            currentBuild.result = 'FAILURE'
+            //slackSend(channel: slackResponse.channelId, message: "Builded failed with error: $(error) Troubleshoot with console log ${env.BUILD_URL}", timestamp: slack.Response.ts)
+          }
+        }
+      
+      }  
     }
-    stage('test') {
-      println('A test has failed!')
-      sh 'exit 1'
-    }
-  } catch(e) {
-    // mark build as failed
-    currentBuild.result = "FAILURE";
-
-    // send slack notification
-    slackSend (channel: slackResponse.channelId, color: '#FF0000', message: "Build: ${env.JOB_NAME} Completed Successfully ${env.BUILD_URL}", timestamp: slackResponse.ts)
-
-    // throw the error
-    throw e;
   }
 }
